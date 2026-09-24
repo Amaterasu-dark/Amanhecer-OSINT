@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Amanhecer OSINT
 
 Versão base **0.2.0**, com ampliação local em desenvolvimento para **CNPJ e telefone**. Aplicação Python de linha de comando com busca de perfis públicos por **arroba e nome completo**, além de **consulta cadastral de CPF pelo serviço contratado do Serpro**. Python 3.11 ou superior; nenhuma dependência externa em execução. A ampliação foi revisada por leitura de código; testes automatizados e consultas ao vivo desta etapa ainda não foram executados.
@@ -171,3 +172,6 @@ Para a validação manual no terminal, execute as consultas acima e compare cada
 - [Anatel: plano de numeração](https://informacoes.anatel.gov.br/legislacao/resolucoes/2022/1641-)
 
 As buscas enviam o arroba/nome às plataformas selecionadas. A consulta de CPF envia CPF e nascimento apenas ao Serpro, junto ao Bearer token. CNPJ envia o identificador à BrasilAPI; telefone envia apenas o DDD à BrasilAPI. O modo `--somente-validar` não usa rede. O software não mantém cache ou banco de dados; persistência só ocorre quando `--saida` é informado ou a saída padrão é redirecionada.
+=======
+# Amanhecer-OSINT
+>>>>>>> c90087290c0b1d5fc5c7c9daac9c1b40148edc37

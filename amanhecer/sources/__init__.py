@@ -1,1 +1,1 @@
-"""Módulos de sources do Amanhecer."""
+git checkout -m "Módulos de sources do Amanhecer."
