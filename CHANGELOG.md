@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## Em desenvolvimento
+
+- Refatoração da CLI e do domínio com `match/case`, funções por responsabilidade e normalização independente dos adaptadores. Cálculo de dígitos e formatação de campos compartilhados.
+- CNPJ disponível na CLI: validação local numérica/alfanumérica e consulta empresarial pela BrasilAPI, com conferência do CNPJ retornado.
+- Telefone brasileiro: normalização com DDD/DDI, análise local de formato e região do DDD na BrasilAPI. Não consulta titular, operadora ou atividade da linha.
+- `--somente-validar` disponível para CPF, CNPJ e telefone; relatórios texto, JSON e HTML para os novos tipos.
+- Testes automatizados e consultas ao vivo desta etapa não executados, conforme combinado. Revisão por leitura do código.
+
 ## 0.2.0
 
 - CLI focada em `arroba`, `nome` e `cpf`, com opção `--version`.

@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "amanhecer-osint"
 version = "0.2.0"
-description = "Consultas por arroba, nome completo e CPF via Serpro"
+description = "Consultas por arroba, nome, CPF via Serpro, CNPJ e região de telefone"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.scripts]
-amanhecer = "amanhecer.cli:main"
+amanhecer = "amanhecer.commands.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["amanhecer*"]
