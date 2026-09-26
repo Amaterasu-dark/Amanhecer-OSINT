@@ -1,0 +1,210 @@
+{
+  "info": {
+    "name": "Amanhecer - Backend local",
+    "description": "Inicie python backend/server.py. Token Serpro configurado no ambiente do servidor. A consulta CPF pode consumir o contrato. Exemplos somente_validar nao acessam rede.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "cpf",
+      "value": ""
+    },
+    {
+      "key": "nascimento",
+      "value": ""
+    },
+    {
+      "key": "cnpj",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Saude do servidor",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "name": "Arroba",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/arroba",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"octocat\",\n  \"plataformas\": [\n    \"github\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Nome",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/nome",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"Maria Silva\",\n  \"plataformas\": [\n    \"github\"\n  ],\n  \"limite\": 10\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Validar CPF sem rede",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/cpf",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"40442820135\",\n  \"somente_validar\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Consultar CPF no Serpro",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/cpf",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"{{cpf}}\",\n  \"nascimento\": \"{{nascimento}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Validar CNPJ sem rede",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/cnpj",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"00000000000191\",\n  \"somente_validar\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Consultar CNPJ",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/cnpj",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"{{cnpj}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Validar telefone sem rede",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/telefone",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"11912345678\",\n  \"somente_validar\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Consultar regiao do telefone",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/telefone",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"valor\": \"11912345678\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

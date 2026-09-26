@@ -1,0 +1,65 @@
+{
+  "info": {
+    "name": "Amanhecer — CPF Serpro (produção)",
+    "description": "Collection separada porque a consulta de produção exige contrato e pode consumir franquia ou gerar cobrança. Preencha cpf, nascimento_ddmmaaaa e serpro_token localmente. O token já deve estar emitido: geração/renovação OAuth não é implementada pelo projeto. CPF e nascimento ficam na URL e podem aparecer no histórico do Postman. Nenhuma chamada foi executada.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "protocolProfileBehavior": {
+    "followRedirects": false
+  },
+  "item": [
+    {
+      "name": "Consulta CPF v3 — produção",
+      "protocolProfileBehavior": {
+        "followRedirects": false
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "User-Agent",
+            "value": "AmanhecerOSINT/0.2.0"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{serpro_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://gateway.apiserpro.serpro.gov.br/consulta-cpf-df/v3/cpf/{{cpf}}/{{nascimento_ddmmaaaa}}",
+          "protocol": "https",
+          "host": [
+            "gateway",
+            "apiserpro",
+            "serpro",
+            "gov",
+            "br"
+          ],
+          "path": [
+            "consulta-cpf-df",
+            "v3",
+            "cpf",
+            "{{cpf}}",
+            "{{nascimento_ddmmaaaa}}"
+          ],
+          "query": []
+        },
+        "description": "CPF: 11 dígitos sem pontuação. Nascimento na API: DDMMAAAA (a CLI recebe AAAA-MM-DD e converte). Token sem o prefixo Bearer. Confira ni e nascimento na resposta; 206 é conteúdo parcial; 404 é ausência na fonte. Não há repetição automática configurada."
+      },
+      "response": []
+    }
+  ]
+}
