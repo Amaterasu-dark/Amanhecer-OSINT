@@ -81,7 +81,7 @@ def render_text(report: Report) -> str:
     if report.query.kind == QueryKind.USERNAME:
         target = "@" + target
     lines = [f"Amanhecer OSINT | {report.query.kind.value}: {terminal_text(target)}", f"Coleta: {report.created_at}", ""]
-    for result in report.results:
+    for result in report.unique_results():
         lines.extend(render_evidence(result))
     note = QUERY_NOTES.get(report.query.kind)
     if note:

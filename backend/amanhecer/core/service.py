@@ -6,7 +6,7 @@ from .contracts import Provider, SourceError
 
 class InvestigationService:
     def __init__(self, providers: Sequence[Provider]):
-        self.providers = providers
+        self.providers = tuple(providers)
 
     def investigate(self, query: Query) -> Report:
         selected = [provider for provider in self.providers if provider.supports(query)]

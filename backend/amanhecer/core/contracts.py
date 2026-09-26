@@ -1,7 +1,7 @@
 """Contratos entre aplicação e adaptadores."""
 from typing import Any, Protocol
 from dataclasses import dataclass
-from ..core.models import Evidence, Query
+from .models import Evidence, Query
 
 
 class SourceError(Exception):

@@ -128,10 +128,20 @@ class UsernameCliTests(unittest.TestCase):
 
     @patch("amanhecer.cli.HttpClient")
     def test_out_of_scope_commands_fail_before_network(self, client):
-        for kind in ["dominio", "cnpj", "cep", "ddd", "banco"]:
-            with self.subTest(kind=kind), patch("sys.stderr", new=io.StringIO()), self.assertRaises(SystemExit) as raised:
-                main([kind, "example"])
-            self.assertEqual(raised.exception.code, 2)
+        for kind in ["dominio", "cep", "ddd", "banco"]:
+            with self.subTest(kind=kind), patch("sys.stderr", new=io.StringIO()):
+                with self.assertRaises(SystemExit) as raised:
+                    main([kind, "example"])
+                self.assertEqual(raised.exception.code, 2)
+        client.assert_not_called()
+
+    @patch("amanhecer.cli.HttpClient")
+    def test_cnpj_and_phone_local_commands_do_not_create_client(self, client):
+        for kind, value, expected in [("cnpj", "00.000.000/0001-91", "validated"),
+                                      ("telefone", "(11) 91234-5678", "format_valid")]:
+            with self.subTest(kind=kind), patch("sys.stdout", new=io.StringIO()) as output:
+                self.assertEqual(main([kind, value, "--somente-validar", "--formato", "json"]), 0)
+                self.assertEqual(json.loads(output.getvalue())["results"][0]["data"]["match"], expected)
         client.assert_not_called()
 
     def test_external_content_is_safe_in_terminal_and_html(self):

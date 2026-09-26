@@ -2,11 +2,15 @@
 
 ## Em desenvolvimento
 
+- Deduplicação de evidências e candidatos nos relatórios texto, JSON e HTML, preservando fontes distintas, homônimos e falhas.
+- Correção do comando Git inserido em `sources/__init__.py`, que impedia iniciar o programa, e remoção dos marcadores de conflito no README.
+- Verificação em 25/09/2026: 72 testes sem rede aprovados, incluindo regressões de deduplicação e modos locais de CNPJ/telefone; teste antigo de comandos indisponíveis atualizado.
+
 - Refatoração da CLI e do domínio com `match/case`, funções por responsabilidade e normalização independente dos adaptadores. Cálculo de dígitos e formatação de campos compartilhados.
 - CNPJ disponível na CLI: validação local numérica/alfanumérica e consulta empresarial pela BrasilAPI, com conferência do CNPJ retornado.
 - Telefone brasileiro: normalização com DDD/DDI, análise local de formato e região do DDD na BrasilAPI. Não consulta titular, operadora ou atividade da linha.
 - `--somente-validar` disponível para CPF, CNPJ e telefone; relatórios texto, JSON e HTML para os novos tipos.
-- Testes automatizados e consultas ao vivo desta etapa não executados, conforme combinado. Revisão por leitura do código.
+- Consultas ao vivo desta etapa ainda não executadas.
 
 ## 0.2.0
 

@@ -1,0 +1,766 @@
+{
+  "info": {
+    "name": "Amanhecer — APIs públicas e legado",
+    "description": "Importe também Amanhecer.postman_environment.json e selecione o ambiente. Preencha as variáveis das consultas. Requisições espelham o código atual; não foram enviadas. Não há scripts nem testes automatizados. Chamadas diretas aos serviços externos: o backend é uma CLI, não um servidor REST. Desative o seguimento de redirecionamentos no cliente e use timeout de 15000 ms para aproximar o transporte do programa. Prefira enviar individualmente; não há limitação automática de frequência nesta collection. A API devolve a resposta bruta, sem mascaramento ou seleção de campos feitos pela CLI.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "protocolProfileBehavior": {
+    "followRedirects": false
+  },
+  "item": [
+    {
+      "name": "01 — GitHub (ativo)",
+      "item": [
+        {
+          "name": "Arroba exato",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2026-03-10"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://api.github.com/users/{{github_username}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "github",
+                "com"
+              ],
+              "path": [
+                "users",
+                "{{github_username}}"
+              ],
+              "query": []
+            },
+            "description": "Informe somente o arroba, sem @. 404 indica perfil não encontrado nesta fonte; bloqueios e limites são inconclusivos."
+          },
+          "response": []
+        },
+        {
+          "name": "Candidatos por nome",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2026-03-10"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://api.github.com/search/users?q=%22{{nome_completo}}%22+in%3Afullname+type%3Auser&per_page={{limite}}&page=1",
+              "protocol": "https",
+              "host": [
+                "api",
+                "github",
+                "com"
+              ],
+              "path": [
+                "search",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "\"{{nome_completo}}\" in:fullname type:user"
+                },
+                {
+                  "key": "per_page",
+                  "value": "{{limite}}"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Possíveis perfis, sem confirmação de identidade. Preencha nome_completo. Confira incomplete_results e total_count."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 — GitLab (ativo)",
+      "item": [
+        {
+          "name": "Arroba exato",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://gitlab.com/api/v4/users?username={{gitlab_username}}",
+              "protocol": "https",
+              "host": [
+                "gitlab",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v4",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "{{gitlab_username}}"
+                }
+              ]
+            },
+            "description": "Informe o arroba sem @. Lista vazia significa ausência de perfil público; 404 não é tratado como ausência pelo projeto."
+          },
+          "response": []
+        },
+        {
+          "name": "Candidatos por nome",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://gitlab.com/api/v4/users?search={{nome_completo}}&per_page={{limite}}&page=1",
+              "protocol": "https",
+              "host": [
+                "gitlab",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v4",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "{{nome_completo}}"
+                },
+                {
+                  "key": "per_page",
+                  "value": "{{limite}}"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Busca candidatos; pode corresponder ao nome ou arroba. Não confirma identidade."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 — BrasilAPI (ativo)",
+      "item": [
+        {
+          "name": "CNPJ",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://brasilapi.com.br/api/cnpj/v1/{{cnpj}}",
+              "protocol": "https",
+              "host": [
+                "brasilapi",
+                "com",
+                "br"
+              ],
+              "path": [
+                "api",
+                "cnpj",
+                "v1",
+                "{{cnpj}}"
+              ],
+              "query": []
+            },
+            "description": "Preencha cnpj com 14 caracteres sem pontuação. Confira se o CNPJ retornado coincide com a entrada. Esta chamada não executa a validação local da CLI."
+          },
+          "response": []
+        },
+        {
+          "name": "Região do telefone por DDD",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://brasilapi.com.br/api/ddd/v1/{{ddd}}",
+              "protocol": "https",
+              "host": [
+                "brasilapi",
+                "com",
+                "br"
+              ],
+              "path": [
+                "api",
+                "ddd",
+                "v1",
+                "{{ddd}}"
+              ],
+              "query": []
+            },
+            "description": "Envia somente o DDD de dois dígitos. Retorna UF e municípios; não consulta titular nem localização atual. O prefixo +55 é tratado localmente pelo programa."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 — Legado (fora dos comandos atuais)",
+      "description": "Endpoints preservados no protótipo; não representam recursos ativos da CLI.",
+      "item": [
+        {
+          "name": "CEP",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://brasilapi.com.br/api/cep/v2/{{cep}}",
+              "protocol": "https",
+              "host": [
+                "brasilapi",
+                "com",
+                "br"
+              ],
+              "path": [
+                "api",
+                "cep",
+                "v2",
+                "{{cep}}"
+              ],
+              "query": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Banco",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://brasilapi.com.br/api/banks/v1/{{banco}}",
+              "protocol": "https",
+              "host": [
+                "brasilapi",
+                "com",
+                "br"
+              ],
+              "path": [
+                "api",
+                "banks",
+                "v1",
+                "{{banco}}"
+              ],
+              "query": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Domínio .br — Registro.br",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://brasilapi.com.br/api/registrobr/v1/{{dominio_br}}",
+              "protocol": "https",
+              "host": [
+                "brasilapi",
+                "com",
+                "br"
+              ],
+              "path": [
+                "api",
+                "registrobr",
+                "v1",
+                "{{dominio_br}}"
+              ],
+              "query": []
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "DNS — A",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://dns.google/resolve?name={{dominio}}&type=A&edns_client_subnet=0.0.0.0%2F0",
+              "protocol": "https",
+              "host": [
+                "dns",
+                "google"
+              ],
+              "path": [
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{dominio}}"
+                },
+                {
+                  "key": "type",
+                  "value": "A"
+                },
+                {
+                  "key": "edns_client_subnet",
+                  "value": "0.0.0.0/0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "DNS — AAAA",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://dns.google/resolve?name={{dominio}}&type=AAAA&edns_client_subnet=0.0.0.0%2F0",
+              "protocol": "https",
+              "host": [
+                "dns",
+                "google"
+              ],
+              "path": [
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{dominio}}"
+                },
+                {
+                  "key": "type",
+                  "value": "AAAA"
+                },
+                {
+                  "key": "edns_client_subnet",
+                  "value": "0.0.0.0/0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "DNS — MX",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://dns.google/resolve?name={{dominio}}&type=MX&edns_client_subnet=0.0.0.0%2F0",
+              "protocol": "https",
+              "host": [
+                "dns",
+                "google"
+              ],
+              "path": [
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{dominio}}"
+                },
+                {
+                  "key": "type",
+                  "value": "MX"
+                },
+                {
+                  "key": "edns_client_subnet",
+                  "value": "0.0.0.0/0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "DNS — NS",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://dns.google/resolve?name={{dominio}}&type=NS&edns_client_subnet=0.0.0.0%2F0",
+              "protocol": "https",
+              "host": [
+                "dns",
+                "google"
+              ],
+              "path": [
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{dominio}}"
+                },
+                {
+                  "key": "type",
+                  "value": "NS"
+                },
+                {
+                  "key": "edns_client_subnet",
+                  "value": "0.0.0.0/0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "DNS — TXT",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://dns.google/resolve?name={{dominio}}&type=TXT&edns_client_subnet=0.0.0.0%2F0",
+              "protocol": "https",
+              "host": [
+                "dns",
+                "google"
+              ],
+              "path": [
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{dominio}}"
+                },
+                {
+                  "key": "type",
+                  "value": "TXT"
+                },
+                {
+                  "key": "edns_client_subnet",
+                  "value": "0.0.0.0/0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "DNS — CAA",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://dns.google/resolve?name={{dominio}}&type=CAA&edns_client_subnet=0.0.0.0%2F0",
+              "protocol": "https",
+              "host": [
+                "dns",
+                "google"
+              ],
+              "path": [
+                "resolve"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{dominio}}"
+                },
+                {
+                  "key": "type",
+                  "value": "CAA"
+                },
+                {
+                  "key": "edns_client_subnet",
+                  "value": "0.0.0.0/0"
+                }
+              ]
+            },
+            "description": ""
+          },
+          "response": []
+        },
+        {
+          "name": "Certificados históricos — crt.sh",
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "User-Agent",
+                "value": "AmanhecerOSINT/0.2.0"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "https://crt.sh/?q=%25.{{dominio}}&output=json",
+              "protocol": "https",
+              "host": [
+                "crt",
+                "sh"
+              ],
+              "path": [
+                ""
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "%.{{dominio}}"
+                },
+                {
+                  "key": "output",
+                  "value": "json"
+                }
+              ]
+            },
+            "description": "Certificados históricos não comprovam atividade ou propriedade atual."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

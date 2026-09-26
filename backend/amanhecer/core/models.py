@@ -2,6 +2,7 @@
 from dataclasses import asdict, dataclass, field, replace
 from datetime import datetime, timezone
 from enum import Enum
+import json
 from typing import Literal
 from .results import EvidenceData, validate_result
 from .normalization import (
@@ -94,7 +95,22 @@ class Report:
     results: list[Evidence]
     created_at: str = field(default_factory=utc_now)
 
+    def unique_results(self) -> list[Evidence]:
+        """Preserva a primeira coleta de evidências iguais, sem ocultar divergências."""
+        results, seen = [], set()
+        for item in self.results:
+            item = item.validated()
+            key = (item.provider, item.source_url, item.status, item.error,
+                   json.dumps(item.data, sort_keys=True, ensure_ascii=False))
+            if key not in seen:
+                seen.add(key)
+                results.append(item)
+        return results
+
+    def __post_init__(self) -> None:
+        self.results = self.unique_results()
+
     def to_dict(self) -> dict:
-        result = asdict(replace(self, results=[item.validated() for item in self.results]))
+        result = asdict(replace(self, results=self.unique_results()))
         result["query"]["value"] = display_query(self.query)
         return result

@@ -80,7 +80,7 @@ def build_phone_providers(args: argparse.Namespace) -> list[Provider]:
 
 
 def build_providers(kind: QueryKind, args: argparse.Namespace) -> list[Provider]:
-    """Seleciona a composição específica de cada tipo de consulta."""
+    """Ponto de composição: cria transportes e os injeta nas fontes."""
     match kind:
         case QueryKind.CPF:
             return build_cpf_providers(args)
@@ -108,11 +108,13 @@ def write_report(report: Report, output_format: str, destination: Path | None) -
     print(f"Relatório salvo em {destination}", file=sys.stderr)
 
 
-def execute(args: argparse.Namespace) -> int:
+def execute(args: argparse.Namespace, *, service: InvestigationService | None = None) -> int:
+    """Executa a CLI; um chamador local pode fornecer um serviço já composto."""
     query = Query(QueryKind(args.tipo), args.valor)
     validate_options(args, query.kind)
-    providers = build_providers(query.kind, args)
-    report = InvestigationService(providers).investigate(query)
+    if service is None:
+        service = InvestigationService(build_providers(query.kind, args))
+    report = service.investigate(query)
     write_report(report, args.formato, args.saida)
     return 1 if any(result.status == "error" for result in report.results) else 0
 

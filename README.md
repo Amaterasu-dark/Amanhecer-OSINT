@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 # Amanhecer OSINT
 
-Versão base **0.2.0**, com ampliação local em desenvolvimento para **CNPJ e telefone**. Aplicação Python de linha de comando com busca de perfis públicos por **arroba e nome completo**, além de **consulta cadastral de CPF pelo serviço contratado do Serpro**. Python 3.11 ou superior; nenhuma dependência externa em execução. A ampliação foi revisada por leitura de código; testes automatizados e consultas ao vivo desta etapa ainda não foram executados.
+Versão base **0.2.0**, com ampliação local em desenvolvimento para **CNPJ e telefone**. Aplicação Python de linha de comando com busca de perfis públicos por **arroba e nome completo**, além de **consulta cadastral de CPF pelo serviço contratado do Serpro**. Python 3.11 ou superior; nenhuma dependência externa em execução. A suíte automatizada foi executada sem acesso à rede; consultas ao vivo desta etapa continuam pendentes.
 
 ## Escopo acordado
 
@@ -29,6 +28,60 @@ GitHub e GitLab são as integrações iniciais. Instagram, TikTok e X ainda não
 
 Arroba e nome não fazem login nem usam tokens. CPF usa exclusivamente o token de acesso ao Serpro, enviado apenas ao endpoint dessa consulta. Respostas de autenticação obrigatória, bloqueio, limite de requisições, redirecionamento ou falha de rede aparecem como **inconclusivas**. A aplicação não segue redirecionamentos automaticamente.
 
+## API local e Postman
+
+Na raiz do projeto, inicie o servidor de desenvolvimento com Python 3.11 ou superior:
+
+```powershell
+python backend/server.py
+```
+
+No Windows também pode usar `py -3 backend/server.py`. O servidor escuta somente
+em `http://127.0.0.1:8000`. Para trocar a porta, use `--port 8001`; para encerrar,
+pressione Ctrl+C. Não precisa instalar dependências. `python main.py` continua
+sendo a interface de terminal e não inicia o servidor.
+
+Importe no Postman **backend/postman/Amanhecer-Local.postman_collection.json**.
+A variável `base_url` já aponta para o servidor local. As collections anteriores
+chamam os provedores externos diretamente. Comece por `GET {{base_url}}/health`
+e pelos exemplos de validação sem rede.
+
+| Método | Rota | Corpo JSON |
+| --- | --- | --- |
+| GET | `/health` | Sem corpo |
+| POST | `/api/v1/arroba` | `{"valor":"octocat","plataformas":["github"]}` |
+| POST | `/api/v1/nome` | `{"valor":"Maria Silva","limite":10,"plataformas":["github"]}` |
+| POST | `/api/v1/cpf` | `{"valor":"40442820135","somente_validar":true}` |
+| POST | `/api/v1/cnpj` | `{"valor":"00000000000191","somente_validar":true}` |
+| POST | `/api/v1/telefone` | `{"valor":"11912345678","somente_validar":true}` |
+
+Envie `Content-Type: application/json`. `plataformas` é opcional e aceita `github`
+e `gitlab`; `limite` aceita inteiros de 1 a 50. Sem `somente_validar: true`, CNPJ
+consulta BrasilAPI e telefone consulta a região do DDD. CPF cadastral exige
+`nascimento` no formato `AAAA-MM-DD` e `AMANHECER_SERPRO_TOKEN` configurado no
+ambiente **antes de iniciar o servidor**; o token não é recebido no corpo HTTP.
+A consulta cadastral de CPF pode consumir a franquia do contrato Serpro.
+
+Respostas de consulta usam o relatório JSON existente, com CPF mascarado e
+resultados por fonte. HTTP 200 significa consulta concluída (inclusive ausência
+de resultado); 400 indica entrada inválida, 404 rota inexistente, 405 método
+incorreto, 413 corpo acima de 16 KB, 415 tipo de conteúdo incorreto, 502 falha de
+fonte (preservando resultados parciais) e 503 configuração Serpro ausente.
+O servidor não registra corpos nem identificadores e envia `Cache-Control: no-store`.
+Este servidor é destinado ao desenvolvimento local, sem autenticação e sem CORS.
+
+A camada `backend/amanhecer/api/server.py` trata HTTP e roteamento;
+`api/controller.py` valida a entrada e compõe os provedores para o mesmo
+`InvestigationService` usado pela CLI. As regras e os adaptadores permanecem
+em `core/` e `sources/`.
+
+Para executar a suíte, incluindo testes HTTP locais com fontes simuladas:
+
+```powershell
+$env:PYTHONPATH = "$PWD/backend"
+py -3 -m unittest discover -s tests -v
+```
+
 ## Executar no PowerShell
 
 Na pasta do projeto, com Python 3.11 ou superior selecionado:
@@ -51,6 +104,8 @@ py -3 main.py telefone "(11) 91234-5678" --somente-validar
 Use aspas ao informar `@apelido` no PowerShell. Sem `@`, as aspas são opcionais. URLs, espaços internos e entradas como `@@apelido` são rejeitados. A entrada aceita de 1 a 64 caracteres ASCII: letras, números, ponto, hífen e sublinhado, começando por letra, número ou sublinhado. Cada fonte pode ter regras de arroba mais restritas.
 
 A saída padrão é texto legível no terminal. JSON e HTML incluem todos os campos coletados, URL da fonte e data UTC por resultado. O HTML é um arquivo de relatório, não uma interface web.
+
+Os três formatos removem blocos de evidência idênticos da mesma fonte, preservando a data da primeira ocorrência. Candidatos repetidos pelo mesmo arroba e URL aparecem uma vez; GitHub e GitLab desconsideram diferenças de caixa e barra final na URL. Homônimos, perfis em plataformas diferentes e evidências com dados, status ou erros distintos permanecem separados. As contagens totais e os avisos de pesquisa incompleta informados pelas APIs são preservados.
 
 ### Consulta de CPF
 
@@ -149,13 +204,13 @@ Para adicionar uma plataforma, implemente `UsernameProvider`, definindo a URL e 
 
 ## Verificação
 
-Os testes abaixo se referem à base 0.2.0. Não foram executados novamente nesta etapa; os novos comandos CNPJ/telefone ainda precisam de validação de execução quando solicitada.
+A suíte foi executada em 25/09/2026: 72 testes passaram, sem consultas externas. Inclui regressões de deduplicação nos três formatos e verificação dos modos locais de CNPJ e telefone. As consultas ao vivo continuam pendentes.
 
 ```powershell
 py -3 -m unittest discover -s tests -v
 ```
 
-Os 66 testes cobrem arroba, nomes com acentos, CPF com zeros iniciais, dígitos verificadores, datas, respostas malformadas, ausência de resultados, homônimos/candidatos, pesquisas incompletas, HTTP 206/403/404/429, credenciais restritas ao host do Serpro, falhas parciais, opções incompatíveis, seleção de plataformas, exportação com CPF mascarado, proteção de arquivos, caracteres de controle no terminal e escape HTML. Também preservam testes internos do protótipo anterior. Usam respostas simuladas e não certificam disponibilidade das fontes externas.
+Os testes cobrem arroba, nomes com acentos, CPF com zeros iniciais, dígitos verificadores, datas, respostas malformadas, ausência de resultados, homônimos/candidatos, pesquisas incompletas, HTTP 206/403/404/429, credenciais restritas ao host do Serpro, falhas parciais, opções incompatíveis, seleção de plataformas, exportação com CPF mascarado, proteção de arquivos, caracteres de controle no terminal e escape HTML. Também preservam testes internos do protótipo anterior. Usam respostas simuladas e não certificam disponibilidade das fontes externas.
 
 Para a validação manual no terminal, execute as consultas acima e compare cada resultado com a página pública da respectiva plataforma. Teste também `"@@apelido"`, uma fonte indisponível e uma segunda exportação para o mesmo arquivo. Resultado inconclusivo deve permanecer visível no relatório.
 
@@ -172,6 +227,3 @@ Para a validação manual no terminal, execute as consultas acima e compare cada
 - [Anatel: plano de numeração](https://informacoes.anatel.gov.br/legislacao/resolucoes/2022/1641-)
 
 As buscas enviam o arroba/nome às plataformas selecionadas. A consulta de CPF envia CPF e nascimento apenas ao Serpro, junto ao Bearer token. CNPJ envia o identificador à BrasilAPI; telefone envia apenas o DDD à BrasilAPI. O modo `--somente-validar` não usa rede. O software não mantém cache ou banco de dados; persistência só ocorre quando `--saida` é informado ou a saída padrão é redirecionada.
-=======
-# Amanhecer-OSINT
->>>>>>> c90087290c0b1d5fc5c7c9daac9c1b40148edc37

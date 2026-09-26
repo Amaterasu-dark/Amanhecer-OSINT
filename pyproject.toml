@@ -12,5 +12,9 @@ dependencies = []
 [project.scripts]
 amanhecer = "amanhecer.commands.cli:main"
 
+[tool.setuptools]
+package-dir = {"" = "backend"}
+
 [tool.setuptools.packages.find]
+where = ["backend"]
 include = ["amanhecer*"]

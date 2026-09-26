@@ -12,6 +12,7 @@ from .. import __version__
 MAX_RESPONSE_BYTES = 5_000_000
 RETRYABLE_HTTP_STATUS = frozenset({500, 502, 503, 504})
 READ_ERRORS = (IncompleteRead, RemoteDisconnected, BadStatusLine, LineTooLong)
+TRANSIENT_ERRORS = READ_ERRORS + (URLError, TimeoutError, OSError)
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -85,7 +86,7 @@ class HttpClient:
                     delay = self.retry_delay(exc, attempt)
                 finally:
                     exc.close()
-            except (*READ_ERRORS, URLError, TimeoutError, OSError) as exc:
+            except TRANSIENT_ERRORS as exc:
                 if attempt == self.retries:
                     raise SourceError("Falha de conexão, leitura incompleta ou tempo limite na fonte.") from exc
                 delay = 2 ** attempt
